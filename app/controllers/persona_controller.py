@@ -34,6 +34,15 @@ def poblar_datos_masivos(request: PoblarRequest, db: Session = Depends(get_db)):
         "status": 201
     }
 
+@router.delete("/reset", status_code=status.HTTP_200_OK)
+def reset_datos(db: Session = Depends(get_db)):
+    """Elimina todos los registros de la base de datos."""
+    cantidad_borrada = persona_service.reset_personas_service(db)
+    return {
+        "message": f"Base de datos reiniciada. Se eliminaron {cantidad_borrada} registros.",
+        "status": 200
+    }
+
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
     """Retrieve a Persona by ID via service layer."""
