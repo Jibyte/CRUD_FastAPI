@@ -6,6 +6,9 @@ from ..models.persona import Persona
 from ..views.persona import PersonaCreate, PersonaUpdate
 from .errors import PersonaNotFoundError, EmailAlreadyExistsError
 
+import random
+from faker import Faker
+
 
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
     """Create a Persona ensuring unique email."""
@@ -76,3 +79,40 @@ def delete_persona(db: Session, persona_id: int) -> None:
         raise PersonaNotFoundError()
     db.delete(obj)
     db.commit()
+
+def poblar_personas(db: Session, cantidad: int) -> int:
+    """Genera e inserta un número específico de Personas usando Faker."""
+    fake = Faker('es_CO') 
+    nuevas_personas = []
+    dominios = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'] 
+
+    for _ in range(cantidad):
+        nombre = fake.first_name()
+        apellido = fake.last_name()
+        
+        
+        correo_base = f"{nombre.lower().replace(' ', '')}.{apellido.lower().replace(' ', '')}"
+        correo = f"{correo_base}{random.choice(dominios)}"
+        
+        
+        contador = 1
+        while db.query(Persona).filter(Persona.email == correo).first():
+            correo = f"{correo_base}{contador}{random.choice(dominios)}"
+            contador += 1
+            
+        nueva_persona = Persona(
+            first_name=nombre,
+            last_name=apellido,
+            email=correo,
+            phone=fake.phone_number()[:30], 
+            birth_date=fake.date_of_birth(minimum_age=18, maximum_age=85),
+            is_active=random.choice([True, False]),
+            notes=fake.sentence() if random.choice([True, False]) else None
+        )
+        nuevas_personas.append(nueva_persona)
+
+    
+    db.add_all(nuevas_personas)
+    db.commit()
+    
+    return len(nuevas_personas)
