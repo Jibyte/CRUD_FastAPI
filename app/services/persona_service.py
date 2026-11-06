@@ -116,3 +116,10 @@ def poblar_personas(db: Session, cantidad: int) -> int:
     db.commit()
     
     return len(nuevas_personas)
+
+def reset_personas_service(db: Session) -> int:
+    """Elimina todos los registros de la tabla Persona."""
+    # db.query(Persona).delete() borra todo eficientemente sin cargar los objetos en memoria
+    filas_borradas = db.query(Persona).delete()
+    db.commit()
+    return filas_borradas
