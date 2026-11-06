@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead
+from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead, PoblarRequest
 from ..services import persona_service
 
 router = APIRouter(prefix="/personas", tags=["personas"])
@@ -25,6 +25,14 @@ def list_personas(
     """List Personas with pagination via service layer."""
     return persona_service.list_personas(db, skip=skip, limit=limit)
 
+@router.post("/poblar", status_code=status.HTTP_201_CREATED)
+def poblar_datos_masivos(request: PoblarRequest, db: Session = Depends(get_db)):
+    """Genera e inserta datos masivos usando Faker."""
+    cantidad_creada = persona_service.poblar_personas(db, request.cantidad)
+    return {
+        "message": f"{cantidad_creada} usuarios creados exitosamente",
+        "status": 201
+    }
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
