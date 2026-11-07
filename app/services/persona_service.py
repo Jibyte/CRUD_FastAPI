@@ -9,6 +9,9 @@ from .errors import PersonaNotFoundError, EmailAlreadyExistsError
 import random
 from faker import Faker
 
+import csv
+import io
+
 
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
     """Create a Persona ensuring unique email."""
@@ -123,3 +126,18 @@ def reset_personas_service(db: Session) -> int:
     filas_borradas = db.query(Persona).delete()
     db.commit()
     return filas_borradas
+
+def exportar_personas_csv_service(db: Session) -> str:
+    """Consulta todos los registros y retorna un string en formato CSV."""
+    personas = db.query(Persona).all()
+    salida = io.StringIO()
+    escritor = csv.writer(salida)
+    
+    # Escribir encabezados
+    escritor.writerow(['id', 'first_name', 'last_name', 'email', 'phone', 'birth_date', 'is_active', 'notes'])
+    
+    # Escribir filas extrayendo los datos de cada objeto SQLAlchemy
+    for p in personas:
+        escritor.writerow([p.id, p.first_name, p.last_name, p.email, p.phone, p.birth_date, p.is_active, p.notes])
+        
+    return salida.getvalue()
