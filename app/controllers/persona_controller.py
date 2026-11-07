@@ -1,4 +1,5 @@
 from typing import List
+from fastapi import APIRouter, Depends, Query, status, Response
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
@@ -42,6 +43,18 @@ def reset_datos(db: Session = Depends(get_db)):
         "message": f"Base de datos reiniciada. Se eliminaron {cantidad_borrada} registros.",
         "status": 200
     }
+
+@router.get("/exportar/csv", response_class=Response)
+def exportar_datos_csv(db: Session = Depends(get_db)):
+    """Descarga la base de datos en formato CSV."""
+    csv_data = persona_service.exportar_personas_csv_service(db)
+    
+    # Retornamos una respuesta cruda modificando las cabeceras HTTP
+    return Response(
+        content=csv_data,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=personas.csv"}
+    )
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
