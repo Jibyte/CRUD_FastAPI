@@ -9,6 +9,11 @@ from ..services import persona_service
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
+# Endpoint para consultar la cantidad de personas por dominio de correo
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)):
+    # Llamar al servicio que realiza la consulta
+    return persona_service.estadisticas_dominios_service(db)
 
 @router.post("", response_model=PersonaRead, status_code=status.HTTP_201_CREATED)
 def create_persona(persona_in: PersonaCreate, db: Session = Depends(get_db)):

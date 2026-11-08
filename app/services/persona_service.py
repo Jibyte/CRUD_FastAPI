@@ -141,3 +141,26 @@ def exportar_personas_csv_service(db: Session) -> str:
         escritor.writerow([p.id, p.first_name, p.last_name, p.email, p.phone, p.birth_date, p.is_active, p.notes])
         
     return salida.getvalue()
+
+# Servicio para calcular estadísticas por dominio de correo    
+def estadisticas_dominios_service(db: Session):
+    # Consultar todos los correos de las personas
+    correos = db.query(Persona.email).all()
+
+    # Crear un diccionario para guardar los dominios
+    dominios = {}
+
+    # Recorrer cada correo
+    for correo in correos:
+        # Obtener la parte que está después del @
+        dominio = correo[0].split("@")[-1]
+
+        # Contar cuántas veces aparece cada dominio
+        if dominio in dominios:
+            dominios[dominio] += 1
+        else:
+            dominios[dominio] = 1
+
+    # Retornar las estadísticas
+    return dominios
+    
