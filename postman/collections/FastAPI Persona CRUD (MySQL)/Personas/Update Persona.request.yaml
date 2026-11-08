@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/personas/{{persona_id}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "juan.perez2@example.com",
+      "notes": "Actualizado"
+    }
+order: 4000
