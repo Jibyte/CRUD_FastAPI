@@ -127,6 +127,8 @@ curl -s -X PUT http://127.0.0.1:8000/personas/1 \
 # Eliminar
 curl -s -X DELETE http://127.0.0.1:8000/personas/1 -i
 
+```
+
 ## Detener el servidor
 
 - Si lo iniciaste en la misma terminal: usa `CTRL+C`.
