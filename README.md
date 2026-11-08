@@ -131,3 +131,44 @@ curl -s -X DELETE http://127.0.0.1:8000/personas/1 -i
 
 - Si lo iniciaste en la misma terminal: usa `CTRL+C`.
 - Si corre en background, puedes cerrar esa terminal o matar el proceso de uvicorn (`pkill -f uvicorn`).
+
+## Aportes: endpoints analíticos
+
+Se implementaron endpoints para consultar información estadística de las personas registradas en la base de datos.
+
+### 1. Estadísticas por dominios de correo
+
+`GET /personas/estadisticas/dominios`
+
+Agrupa las personas según el dominio de su correo electrónico y devuelve la cantidad de personas por dominio.
+
+### 2. Estadísticas de edad
+
+`GET /personas/estadisticas/edad`
+
+Devuelve:
+- Edad promedio, redondeada a un decimal.
+- Edad mínima.
+- Edad máxima.
+
+### 3. Consulta de cumpleaños por mes
+
+`GET /personas/cumpleanios/mes/{numero_mes}`
+
+Consulta las personas que cumplen años en el mes indicado.
+
+El parámetro `numero_mes` debe ser un número entero entre 1 y 12.
+
+### 4. Exportación de personas a CSV
+
+`GET /personas/exportar/csv`
+
+Permite descargar los registros de personas en un archivo CSV.
+
+### Pruebas
+
+Los endpoints pueden probarse mediante Swagger UI en:
+
+http://localhost:8000/docs
+
+También se incluye una colección de Postman para probar las solicitudes y respuestas de la API.
