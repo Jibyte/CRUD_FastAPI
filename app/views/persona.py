@@ -45,4 +45,4 @@ class PersonaRead(BaseModel):
 
 class PoblarRequest(BaseModel):
     """Schema for bulk data generation request."""
-    cantidad: int = Field(..., gt=0, le=1000)
+    cantidad: int = Field(..., gt=0, le=1000, description="Cantidad de personas que se desean generar", examples=[100])
