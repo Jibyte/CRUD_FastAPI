@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import APIRouter, Depends, Query, status, Response
-from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -9,11 +8,6 @@ from ..services import persona_service
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
-# Endpoint para consultar la cantidad de personas por dominio de correo
-@router.get("/estadisticas/dominios")
-def estadisticas_dominios(db: Session = Depends(get_db)):
-    # Llamar al servicio que realiza la consulta
-    return persona_service.estadisticas_dominios_service(db)
 
 @router.post("", response_model=PersonaRead, status_code=status.HTTP_201_CREATED)
 def create_persona(persona_in: PersonaCreate, db: Session = Depends(get_db)):
@@ -60,6 +54,28 @@ def exportar_datos_csv(db: Session = Depends(get_db)):
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=personas.csv"}
     )
+# Endpoint para consultar la cantidad de personas por dominio de correo
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)):
+    # Llamar al servicio que agrupa y cuenta los dominios
+    return persona_service.estadisticas_dominios_service(db)
+
+
+# Endpoint para consultar las estadísticas de edad de las personas
+@router.get("/estadisticas/edad")
+def estadisticas_edad(db: Session = Depends(get_db)):
+    # Llamar al servicio que calcula el promedio, la edad mínima y máxima
+    return persona_service.estadisticas_edad_service(db)
+
+# Endpoint para consultar las personas que cumplen años en un mes específico
+@router.get("/cumpleanios/mes/{numero_mes}")
+def cumpleanios_mes(
+    numero_mes: int = Query(..., ge=1, le=12),
+    db: Session = Depends(get_db)
+):
+    # Llamar al servicio que busca las personas según el mes de nacimiento
+    return persona_service.cumpleanios_mes_service(db, numero_mes)
+
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
@@ -78,3 +94,4 @@ def delete_persona(persona_id: int, db: Session = Depends(get_db)):
     """Delete a Persona by ID via service layer."""
     persona_service.delete_persona(db, persona_id)
     return None
+
