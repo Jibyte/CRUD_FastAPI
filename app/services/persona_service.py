@@ -1,6 +1,7 @@
 from typing import Sequence
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func, literal_column
 
 from ..models.persona import Persona
 from ..views.persona import PersonaCreate, PersonaUpdate
@@ -141,3 +142,56 @@ def exportar_personas_csv_service(db: Session) -> str:
         escritor.writerow([p.id, p.first_name, p.last_name, p.email, p.phone, p.birth_date, p.is_active, p.notes])
         
     return salida.getvalue()
+
+# Servicio para calcular estadísticas por dominio de correo usando GROUP BY
+def estadisticas_dominios_service(db: Session):
+    # Extraer el dominio del correo directamente desde SQL
+    dominio = func.substring_index(Persona.email, "@", -1)
+
+    # Agrupar los correos por dominio y contar las personas
+    resultados = (
+        db.query(
+            dominio.label("dominio"),
+            func.count(Persona.id).label("cantidad")
+        )
+        .group_by(dominio)
+        .all()
+    )
+
+    # Convertir los resultados en un diccionario
+    return {dominio: cantidad for dominio, cantidad in resultados}
+
+# Servicio para calcular estadísticas de edad
+def estadisticas_edad_service(db: Session):
+
+    # Calcular la edad cumplida de cada persona usando SQL
+    edad = func.timestampdiff(
+        literal_column("YEAR"),
+        Persona.birth_date,
+        func.curdate()
+    )
+
+    # Calcular el promedio, la edad mínima y la edad máxima
+    resultados = db.query(
+        func.round(func.avg(edad), 1).label("edad_promedio"),
+        func.min(edad).label("edad_minima"),
+        func.max(edad).label("edad_maxima")
+    ).first()
+
+    # Retornar las estadísticas en un diccionario
+    return {
+        "edad_promedio": float(resultados.edad_promedio) if resultados.edad_promedio is not None else None,
+        "edad_minima": resultados.edad_minima,
+        "edad_maxima": resultados.edad_maxima
+    }
+    
+# Servicio para consultar las personas que cumplen años en un mes específico
+def cumpleanios_mes_service(db: Session, numero_mes: int):
+
+    # Buscar las personas cuya fecha de nacimiento corresponde al mes indicado
+    resultados = db.query(Persona).filter(
+        func.month(Persona.birth_date) == numero_mes
+    ).all()
+
+    # Retornar la lista de personas encontradas
+    return resultados

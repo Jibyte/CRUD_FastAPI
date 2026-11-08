@@ -127,21 +127,10 @@ curl -s -X PUT http://127.0.0.1:8000/personas/1 \
 # Eliminar
 curl -s -X DELETE http://127.0.0.1:8000/personas/1 -i
 
+```
+
 ## Detener el servidor
 
 - Si lo iniciaste en la misma terminal: usa `CTRL+C`.
 - Si corre en background, puedes cerrar esa terminal o matar el proceso de uvicorn (`pkill -f uvicorn`).
 
-```
-
-## Nuevos Endpoints (Jimmy)
-
-Como parte de los requerimientos de este taller, se desarrollaron e integraron tres nuevos endpoints en la arquitectura de la API:
-
-*   **Poblar Base de Datos (`POST /personas/poblar`):** Genera e inserta datos masivos en la base de datos. Para esto, utiliza un esquema de validación llamado `PoblarRequest` que define la cantidad de registros a crear. La lógica interna emplea la librería `Faker` para generar nombres, apellidos, fechas de nacimiento, números de teléfono y asegurar que los correos electrónicos generados sean únicos.
-*   **Reiniciar Base de Datos (`DELETE /personas/reset`):** Elimina todos los registros actuales de la tabla `personas` en la base de datos. El borrado se hace de manera eficiente directamente en la base de datos sin cargar los objetos en memoria y retorna la cantidad de registros que fueron eliminados.
-*   **Exportar a CSV (`GET /personas/exportar/csv`):** Consulta todos los registros de la base de datos y permite descargarlos en formato CSV. El endpoint modifica las cabeceras HTTP para retornar un `Response` de tipo `text/csv` como archivo adjunto (`attachment; filename=personas.csv`).
-
-### Otras Actualizaciones
-*   **Dependencias:** Se añadió la librería `Faker==40.44.0` al archivo `requirements.txt` para soportar la generación de datos falsos de usuarios.
-*   **Colección de Postman:** Se actualizó el archivo `FastAPI-CRUD-Demo.postman_collection.json` agregando y renombrando las solicitudes necesarias ("Poblar Base de Datos", "Reset Base de Datos" y "Exportar a CSV") para probar estos nuevos endpoints directamente desde la herramienta.

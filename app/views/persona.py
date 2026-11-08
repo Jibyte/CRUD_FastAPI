@@ -6,7 +6,7 @@ class PersonaBase(BaseModel):
     """Shared attributes for Persona inputs."""
     first_name: str = Field(..., max_length=100)
     last_name: str = Field(..., max_length=100)
-    email: EmailStr
+    email: EmailStr = Field(..., description="Correo electrónico único de la 	persona")
     phone: str | None = Field(default=None, max_length=30)
     birth_date: date | None = None
     is_active: bool = True
@@ -45,4 +45,4 @@ class PersonaRead(BaseModel):
 
 class PoblarRequest(BaseModel):
     """Schema for bulk data generation request."""
-    cantidad: int = Field(..., gt=0, le=1000)
+    cantidad: int = Field(..., gt=0, le=1000, description="Cantidad de personas que se desean generar", examples=[100])
