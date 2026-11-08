@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Query, status, Response
+from fastapi import APIRouter, Depends, Query, status, Response, Path
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -70,7 +70,7 @@ def estadisticas_edad(db: Session = Depends(get_db)):
 # Endpoint para consultar las personas que cumplen años en un mes específico
 @router.get("/cumpleanios/mes/{numero_mes}")
 def cumpleanios_mes(
-    numero_mes: int = Query(..., ge=1, le=12),
+    numero_mes: int = Path(..., ge=1, le=12),
     db: Session = Depends(get_db)
 ):
     # Llamar al servicio que busca las personas según el mes de nacimiento
