@@ -1,4 +1,0 @@
-$kind: http-request
-url: "{{base_url}}/personas/{{persona_id}}"
-method: GET
-order: 3000

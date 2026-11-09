@@ -94,10 +94,8 @@ def poblar_personas(db: Session, cantidad: int) -> int:
         nombre = fake.first_name()
         apellido = fake.last_name()
         
-        
         correo_base = f"{nombre.lower().replace(' ', '')}.{apellido.lower().replace(' ', '')}"
         correo = f"{correo_base}{random.choice(dominios)}"
-        
         
         contador = 1
         while db.query(Persona).filter(Persona.email == correo).first():
@@ -115,11 +113,16 @@ def poblar_personas(db: Session, cantidad: int) -> int:
         )
         nuevas_personas.append(nueva_persona)
 
-    
     db.add_all(nuevas_personas)
-    db.commit()
+    
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise ValueError("Se generaron correos duplicados en el mismo lote. Intenta de nuevo con una cantidad menor.")
     
     return len(nuevas_personas)
+
 
 def reset_personas_service(db: Session) -> int:
     """Elimina todos los registros de la tabla Persona."""
