@@ -56,3 +56,8 @@ class PersonaActivoRead(BaseModel):
     is_active: bool
 
     model_config = {"from_attributes": True}
+
+
+class BulkDesactivarRequest(BaseModel):
+    """Lista de IDs a desactivar."""
+    ids: list[int]
