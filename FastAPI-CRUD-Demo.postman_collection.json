@@ -348,6 +348,25 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Reporte de activos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/personas/reporte/activos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"personas",
+						"reporte",
+						"activos"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
