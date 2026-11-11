@@ -329,6 +329,25 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Buscar personas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/personas/buscar/lopez",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"personas",
+						"buscar",
+						"lopez"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [

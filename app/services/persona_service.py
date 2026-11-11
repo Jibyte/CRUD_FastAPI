@@ -1,7 +1,7 @@
 from typing import Sequence
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import func, literal_column
+from sqlalchemy import func, literal_column, or_
 
 from ..models.persona import Persona
 from ..views.persona import PersonaCreate, PersonaUpdate
@@ -198,3 +198,19 @@ def cumpleanios_mes_service(db: Session, numero_mes: int):
 
     # Retornar la lista de personas encontradas
     return resultados
+
+
+def search_personas(db: Session, termino: str) -> Sequence[Persona]:
+    """Busca el término en first_name, last_name o email (OR, coincidencia parcial)."""
+    patron = f"%{termino}%"
+    return (
+        db.query(Persona)
+        .filter(
+            or_(
+                Persona.first_name.ilike(patron),
+                Persona.last_name.ilike(patron),
+                Persona.email.ilike(patron),
+            )
+        )
+        .all()
+    )
