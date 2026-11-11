@@ -214,3 +214,8 @@ def search_personas(db: Session, termino: str) -> Sequence[Persona]:
         )
         .all()
     )
+
+
+def list_activos(db: Session) -> Sequence[Persona]:
+    """Retorna las personas con is_active = true."""
+    return db.query(Persona).filter(Persona.is_active.is_(True)).all()

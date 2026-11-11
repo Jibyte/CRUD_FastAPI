@@ -3,7 +3,13 @@ from fastapi import APIRouter, Depends, Query, status, Response, Path
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead, PoblarRequest
+from ..views.persona import (
+    PersonaCreate,
+    PersonaUpdate,
+    PersonaRead,
+    PoblarRequest,
+    PersonaActivoRead,
+)
 from ..services import persona_service
 
 router = APIRouter(prefix="/personas", tags=["personas"])
@@ -81,6 +87,12 @@ def cumpleanios_mes(
 def buscar_personas(termino: str, db: Session = Depends(get_db)):
     """E. Busca por first_name, last_name o email (OR). Retorna [] si no hay coincidencias."""
     return persona_service.search_personas(db, termino)
+
+
+@router.get("/reporte/activos", response_model=List[PersonaActivoRead])
+def reporte_activos(db: Session = Depends(get_db)):
+    """F. Personas activas con proyección: id, email, phone, is_active."""
+    return persona_service.list_activos(db)
 
 
 @router.get("/{persona_id}", response_model=PersonaRead)

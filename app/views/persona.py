@@ -46,3 +46,13 @@ class PersonaRead(BaseModel):
 class PoblarRequest(BaseModel):
     """Schema for bulk data generation request."""
     cantidad: int = Field(..., gt=0, le=1000, description="Cantidad de personas que se desean generar", examples=[100])
+
+
+class PersonaActivoRead(BaseModel):
+    """Proyección reducida para el reporte de activos."""
+    id: int
+    email: EmailStr
+    phone: str | None
+    is_active: bool
+
+    model_config = {"from_attributes": True}
