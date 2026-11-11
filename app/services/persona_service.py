@@ -219,3 +219,17 @@ def search_personas(db: Session, termino: str) -> Sequence[Persona]:
 def list_activos(db: Session) -> Sequence[Persona]:
     """Retorna las personas con is_active = true."""
     return db.query(Persona).filter(Persona.is_active.is_(True)).all()
+
+
+def bulk_desactivar(db: Session, ids: list[int]) -> tuple[list[int], list[int]]:
+    """Desactiva en una sola operación los IDs existentes y reporta los no encontrados."""
+    ids_unicos = list(dict.fromkeys(ids))
+    existentes = {i for (i,) in db.query(Persona.id).filter(Persona.id.in_(ids_unicos)).all()}
+    if existentes:
+        db.query(Persona).filter(Persona.id.in_(existentes)).update(
+            {Persona.is_active: False}, synchronize_session=False
+        )
+        db.commit()
+    desactivados = [i for i in ids_unicos if i in existentes]
+    no_encontrados = [i for i in ids_unicos if i not in existentes]
+    return desactivados, no_encontrados

@@ -367,6 +367,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Desactivar en bulk",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/personas/bulk/desactivar",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"personas",
+						"bulk",
+						"desactivar"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ids\": [\n    3,\n    7,\n    14,\n    999\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
