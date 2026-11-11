@@ -77,6 +77,12 @@ def cumpleanios_mes(
     return persona_service.cumpleanios_mes_service(db, numero_mes)
 
 
+@router.get("/buscar/{termino}", response_model=List[PersonaRead])
+def buscar_personas(termino: str, db: Session = Depends(get_db)):
+    """E. Busca por first_name, last_name o email (OR). Retorna [] si no hay coincidencias."""
+    return persona_service.search_personas(db, termino)
+
+
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
     """Retrieve a Persona by ID via service layer."""
