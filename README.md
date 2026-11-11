@@ -164,3 +164,22 @@ Se desarrollaron tres endpoints en FastAPI para realizar consultas estadísticas
 
 * **Método y Ruta:** `GET /personas/cumpleanios/mes/{numero_mes}`
 * **Descripción:** Permite consultar las personas que cumplen años en un mes determinado. El endpoint valida que el número del mes esté entre 1 y 12 y filtra los registros según la fecha de nacimiento.
+
+## Aportes: búsquedas, proyección y bulk (Integrante 3 — Daniela)
+
+Se desarrollaron tres endpoints para búsquedas, reportes con proyección y manipulación masiva de datos.
+
+### 1. Buscador general
+
+* **Método y Ruta:** `GET /personas/buscar/{termino}`
+* **Descripción:** Busca coincidencias parciales (sin distinguir mayúsculas) en `first_name`, `last_name` o `email` usando el operador OR. Devuelve una lista vacía `[]` si no hay resultados.
+
+### 2. Reporte de activos
+
+* **Método y Ruta:** `GET /personas/reporte/activos`
+* **Descripción:** Devuelve solo las personas con `is_active = true`, mostrando únicamente `id`, `email`, `phone` e `is_active` (proyección con el schema `PersonaActivoRead`).
+
+### 3. Desactivación masiva
+
+* **Método y Ruta:** `PATCH /personas/bulk/desactivar`
+* **Descripción:** Recibe `{"ids": [...]}` con entre 1 y 100 IDs (si no, responde 400). Desactiva en una sola operación los IDs que existen y reporta `desactivados`, `no_encontrados` y `total_desactivados` sin fallar cuando algún ID no existe.
